@@ -1,0 +1,64 @@
+ESSS4 - OOP Applied to Image Filtering
+Last revision at: 24/08/2018
+
+Usage and Development Guide:
+
+This toolkit is focused on Grid derived classes aiming at filtering single and multi channel images. The GridFilter derived classes support Grid's methods providing filter parameters.
+
+
+Grid class
+----------
+
+Base abstract class
+
+
+SingleChannelGrid class
+-----------------------
+
+To create a single channel grid object you should provide a single channel image:
+	>> single_channel_grid = SingleChannelGrid(image)
+
+This class offers the blurFilter method, which is also applied to derived classes, such as MultiChannelGrid. To apply this filter you must first create a BlurFilter object:
+	>> applied_filter = BlurFilter(radius, weight)    
+        >> filtered_grid_dict = single_channel_grid.blurFilter(applied_filter)  
+The filtered_grid_dict holds the resulting filter name as dict key and the filtered numpy array as dict value.
+	
+
+MultiChannelGrid class
+----------------------
+To create a multi channel grid object you should provide a multi channel image:
+	>> multi_channel_grid = MultiChannelGrid(image)
+
+This class offers the splitFilter and the inherited blurFilter methods. To apply these filters you must first create a SplitFilter or a BlurFilter object:
+	>> applied_filter = SplitFilter()
+	>> filtered_grid_dict = multi_channel_grid.splitFilter(applied_filter)
+	>> applied_filter = BlurFilter(radius, weight) 
+	>> filtered_grid_dict = multi_channel_grid.blurFilter(applied_filter)
+The filtered_grid_dict holds the resulting filter name(s) as dict key(s) and the filtered numpy array(s) as dict value(s).
+
+
+Creating new filters
+----------------------
+
+In order to expand the code creating new filters, you should:
+1- Create a new filter class derive from the GridFilter class
+2- Create a new method on the SingleChannelGrid, if the filter applies to single channel and multi channel images, or on the MultiChannelGrid, if the filter applies just to multi channel images
+
+Example:
+
+Suppose we want to create a new filter called gradient filter which applies for BOTH the SingleChannelGrid and derived classes.
+
+1- Create a new filter class
+
+class GradientFilter(GridFilter):            
+    def __init__(self, parameter):
+        self.parameter = parameter
+
+2- Create a new SingleChannelGrid method that returns a {'filter name': filtered array} dictionary
+
+class SingleChannelGrid(Grid): 
+    ... 
+    def gradientFilter(self, grid_filter):
+	...
+	return {}
+
